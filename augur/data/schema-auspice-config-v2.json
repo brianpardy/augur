@@ -129,6 +129,11 @@
                     "type": "string",
                     "enum": ["num_date", "div"]
                 },
+		"branch_label": {
+		    "description": "Default branch label",
+		    "type": "string",
+		    "enum": ["aa", "none"]
+		},
                 "layout": {
                     "type": "string",
                     "enum": ["rect", "radial", "unrooted", "clock"]

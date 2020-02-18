@@ -213,6 +213,11 @@
                             "type": "string",
                             "enum": ["div", "num_date"]
                         },
+			"branch_label": {
+			    "description": "Default branch label",
+			    "type": "string",
+			    "enum": ["aa", "none"]
+			},
                         "layout": {
                           "description": "Default tree layout",
                           "type": "string",
