@@ -152,20 +152,13 @@ def verifyMainJSONIsInternallyConsistent(data, ValidateError):
                 if gene not in data["meta"]["genome_annotations"]:
                     warn("The tree defined mutations on gene {} which doesn't appear in the metadata annotations object.".format(gene))
 
-<<<<<<< HEAD
     default_branch_label = data.get("meta").get("display_defaults", {}).get("branch_label")
     if default_branch_label and default_branch_label.lower() != "none":
         labels = collectBranchLabels(data['tree'])
         if not default_branch_label in labels:
             warn("Default label to display \"{}\" isn't found anywhere on the tree!".format(default_branch_label))
 
-    if not warnings:
-        print("Validation succeeded")
-    else:
-        print("Validation failed")
-=======
     return not warnings
->>>>>>> upstream/master
 
 
 def collectTreeAttrsV1(root):
