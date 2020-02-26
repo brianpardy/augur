@@ -80,7 +80,7 @@ def verifyMainJSONIsInternallyConsistent(data, ValidateError):
         warnings = True
         print("\tWARNING: ", msg, file=sys.stderr)
 
-    print("Validating that the JSON is internally consistent")
+    print("Validating that the JSON is internally consistent...")
 
     if "entropy" in data["meta"]["panels"] and "genome_annotations" not in data["meta"]:
         warn("The entropy panel has been specified but annotations don't exist.")
@@ -152,6 +152,7 @@ def verifyMainJSONIsInternallyConsistent(data, ValidateError):
                 if gene not in data["meta"]["genome_annotations"]:
                     warn("The tree defined mutations on gene {} which doesn't appear in the metadata annotations object.".format(gene))
 
+<<<<<<< HEAD
     default_branch_label = data.get("meta").get("display_defaults", {}).get("branch_label")
     if default_branch_label and default_branch_label.lower() != "none":
         labels = collectBranchLabels(data['tree'])
@@ -162,6 +163,9 @@ def verifyMainJSONIsInternallyConsistent(data, ValidateError):
         print("Validation succeeded")
     else:
         print("Validation failed")
+=======
+    return not warnings
+>>>>>>> upstream/master
 
 
 def collectTreeAttrsV1(root):
@@ -213,11 +217,14 @@ def verifyMetaAndOrTreeJSONsAreInternallyConsistent(meta_json, tree_json, Valida
     Check all possible sources of conflict internally & between the metadata & tree JSONs
     This is only that which cannot be checked by the schemas
     """
+    warnings = False
     def warn(msg):
+        nonlocal warnings
+        warnings = True
         print("\tWARNING: ", msg, file=sys.stderr)
 
 
-    print("Validating that meta + tree JSONs are internally consistent... ")
+    print("Validating that meta + tree JSONs are internally consistent...")
     mj = meta_json
 
     if "panels" in mj and "entropy" in mj["panels"] and "annotations" not in mj:
@@ -274,3 +281,5 @@ def verifyMetaAndOrTreeJSONsAreInternallyConsistent(meta_json, tree_json, Valida
             for gene in genes_with_aa_muts:
                 if gene not in mj["annotations"]:
                     warn("The tree defined AA mutations on gene {} which doesn't appear in the metadata annotations object.".format(gene))
+
+    return not warnings
