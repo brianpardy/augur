@@ -6,7 +6,7 @@ min_version = (3, 6)
 
 if sys.version_info < min_version:
     error = """
-Beginning with augur 6.5.0, Python {0} or above is required.
+Beginning with augur 7.0.0, Python {0} or above is required.
 
 This may be due to an out of date pip.
 
@@ -61,6 +61,7 @@ setup(
             "seaborn >=0.9.0, ==0.9.*"
         ],
         'dev': [
+            "freezegun >=0.3.15, ==0.3.*",
             "pylint >=1.7.6, ==1.7.*",
             "pytest >=5.4.1, ==5.4.*",
             "pytest-cov >=2.8.1, ==2.8.*",
@@ -79,9 +80,9 @@ setup(
         "Topic :: Scientific/Engineering :: Bio-Informatics",
         "License :: OSI Approved :: GNU Affero General Public License v3",
 
-        # Python 3 only; pathlib is >=3.4
+        # Python 3 only
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6"
+        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
     ],

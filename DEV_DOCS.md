@@ -26,7 +26,7 @@ Please see the [project board](https://github.com/orgs/nextstrain/projects/6) fo
 
 ## Contributing code
 
-We currently target compatibility with Python 3.4 and higher. As Python releases new versions,
+We currently target compatibility with Python 3.6 and higher. As Python releases new versions,
 the minimum target compatibility may be increased in the future.
 
 Versions for this project, Augur, from 3.0.0 onwards aim to follow the
@@ -49,7 +49,7 @@ as an **editable package** so that your global `augur` command always uses your
 local source code copy:
 
 ```bash
-pip install -e .[dev]
+pip install -e '.[dev]'
 ```
 
 Using an "editable package" is not recommended if you want to be able to compare output
@@ -65,6 +65,7 @@ This section will describe briefly:
 - Writing tests
   - Unit tests
   - Doctests
+  - End-to-end tests
 - Running tests
   - Locally
   - Continuous Integration
@@ -84,24 +85,30 @@ A pull request **should always contain unit tests**. Optionally, a pull request 
 doctests if the contributor believes a doctest would improve the documentation and execution
 of a real world example.
 
+End-to-end tests confirm that augur behaves as expected in real-world pipelines.
+These domain-specific tests are implemented as Snakemake pipelines in `tests/builds`.
+
 #### Running Tests
 
-You've written tests and now you want to run them to see if they are passing. To run
-augur's tests (unit tests and doctests) with pytest and Python3, use the following command
-from the root, top-level of the augur repository:
+You've written tests and now you want to run them to see if they are passing.
+First, install augur with the development dependencies as described above.
+Next, run augur's tests (unit tests and doctests) with the following command from the root, top-level of the augur repository:
 
 ```bash
-pytest -c pytest.python3.ini
+./run_tests.sh
 ```
 
-If you are running legacy augur code using Python 2, execute `pytest -c pytest.python2.ini`.
+Troubleshooting tip: As tests run on the development code in the augur repository, your environment should not have an existing augur installation that could cause a conflict in pytest.
 
-Troubleshooting tip: As tests run on the development code in the augur repository,
-your environment should not have an existing augur installation that could cause a
-conflict in pytest.
+To run end-to-end tests, use the following command from the root, top-level directory.
+You will need to [install the complete Nextstrain environment](https://nextstrain.org/docs/getting-started/local-installation) to run these tests.
 
-We also use Continuous integration with Travis CI to run tests on every pull request
-submitted to the project.
+```bash
+bash tests/builds/runner.sh
+```
+
+We use continuous integration with Travis CI to run tests on every pull request submitted to the project.
+We use [codecov](https://codecov.io/) to automatically produce test coverage for new contributions and the project as a whole.
 
 ### Releasing
 
@@ -125,8 +132,24 @@ need [a PyPi account][] and [twine][] installed to do the latter.
 
 Branches and PRs are tested by Travis CI jobs configured in `.travis.yml`.
 
+Our Travis config uses two build stages: _test_ and _deploy_.  Jobs in the
+_test_ stage always run, but _deploy_ jobs only run sometimes (see below).
+
+The set of _test_ jobs are explicitly defined instead of auto-expanded from the
+implicit job property matrix. Since top-level properties are inherited by all
+jobs regardless of build stage, making the matrix explicit is less confusing
+and easier to reason about. YAML's anchor (`&foo`) and alias merge key (`<<:
+*foo`) syntax let us do this without repeating ourselves unnecessarily.
+
 New releases, via pushes to the `release` branch, trigger a new [docker-base][]
-build to keep the Docker image up-to-date.
+build to keep the Docker image up-to-date. This trigger is implemented in the
+_deploy_ stage, which is implicitly conditioned on the previous _test_ stage's
+successful completion and explicitly conditioned on a non-PR trigger on the
+`release` branch. Note that currently we cannot test this _deploy_ stage
+without making a release.
+
+It can sometimes be useful to verify the config is parsed as you expect using
+<https://config.travis-ci.com/explore>.
 
 [docker-base]: https://github.com/nextstrain/docker-base
 
@@ -165,7 +188,7 @@ Building the documentation locally is useful to test changes.
 First, make sure you have the development dependencies of augur installed:
 
 ```bash
-pip install -e .[dev]
+pip install -e '.[dev]'
 ```
 
 This installs packages listed in the `dev` section of `extras_require` in _setup.py_,
